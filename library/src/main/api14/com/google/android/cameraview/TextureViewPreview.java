@@ -20,7 +20,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
-import android.os.Build;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -40,14 +39,14 @@ class TextureViewPreview extends PreviewImpl {
 
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                setSize(width, height);
+//                setSize(width, height);
                 configureTransform();
                 dispatchSurfaceChanged();
             }
 
             @Override
             public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-                setSize(width, height);
+//                setSize(width, height);
                 configureTransform();
                 dispatchSurfaceChanged();
             }
