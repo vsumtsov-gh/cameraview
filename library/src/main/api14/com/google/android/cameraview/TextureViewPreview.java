@@ -125,8 +125,7 @@ class TextureViewPreview extends PreviewImpl {
                                     0.f, 0.f, // top right
                                     width, height, // bottom left
                                     width, 0.f, // bottom right
-                            }
-                            : // mDisplayOrientation == 270
+                            } : // mDisplayOrientation == 270
                             // Counter-clockwise
                             new float[]{
                                     width, 0.f, // top left

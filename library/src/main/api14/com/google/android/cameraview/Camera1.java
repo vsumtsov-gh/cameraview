@@ -70,18 +70,18 @@ class Camera1 extends CameraViewImpl {
     Camera1(Callback callback, PreviewImpl preview) {
         super(callback, preview);
         preview.setCallback(new PreviewImpl.Callback() {
-                @Override
-                public void onSurfaceChanged() {
-                    if (mCamera != null) {
-                        setUpPreview();
-                        adjustCameraParameters();
-                    }
+            @Override
+            public void onSurfaceChanged() {
+                if (mCamera != null) {
+                    setUpPreview();
+                    adjustCameraParameters();
                 }
-            });
+            }
+        });
     }
 
     @Override
-    void start() {
+    boolean start() {
         chooseCamera();
         openCamera();
         if (mPreview.isReady()) {
@@ -89,6 +89,7 @@ class Camera1 extends CameraViewImpl {
         }
         mShowingPreview = true;
         mCamera.startPreview();
+        return true;
     }
 
     @Override
@@ -100,7 +101,8 @@ class Camera1 extends CameraViewImpl {
         releaseCamera();
     }
 
-    @SuppressLint("NewApi") // Suppresses Camera#setPreviewTexture
+    // Suppresses Camera#setPreviewTexture
+    @SuppressLint("NewApi")
     void setUpPreview() {
         try {
             if (mPreview.getOutputClass() == SurfaceHolder.class) {
@@ -148,10 +150,11 @@ class Camera1 extends CameraViewImpl {
     }
 
     @Override
-    void setAspectRatio(AspectRatio ratio) {
+    boolean setAspectRatio(AspectRatio ratio) {
         if (mAspectRatio == null || !isCameraOpened()) {
             // Handle this later when camera is opened
             mAspectRatio = ratio;
+            return true;
         } else if (!mAspectRatio.equals(ratio)) {
             final Set<Size> sizes = mPreviewSizes.sizes(ratio);
             if (sizes == null) {
@@ -159,8 +162,10 @@ class Camera1 extends CameraViewImpl {
             } else {
                 mAspectRatio = ratio;
                 adjustCameraParameters();
+                return true;
             }
         }
+        return false;
     }
 
     @Override
@@ -205,7 +210,8 @@ class Camera1 extends CameraViewImpl {
     @Override
     void takePicture() {
         if (!isCameraOpened()) {
-            throw new IllegalStateException("Camera is not ready. Call start() before takePicture().");
+            throw new IllegalStateException(
+                    "Camera is not ready. Call start() before takePicture().");
         }
         if (getAutoFocus()) {
             mCamera.cancelAutoFocus();
@@ -399,7 +405,7 @@ class Camera1 extends CameraViewImpl {
         if (isCameraOpened()) {
             List<String> modes = mCameraParameters.getSupportedFlashModes();
             String mode = FLASH_MODES.get(flash);
-            if (modes!= null && modes.contains(mode)) {
+            if (modes != null && modes.contains(mode)) {
                 mCameraParameters.setFlashMode(mode);
                 mFlash = flash;
                 return true;
